@@ -8,8 +8,16 @@
         "48": "icons/icon-48.ico",
         "96": "icons/icon-96.ico"
     },
-    "content_scripts": {
-        "matches": "*://*",
-        "js": "app.js"
+    "content_scripts": [
+        {
+            "matches": ["*://*/*"],
+            "js": ["app.js"]
+        }
+    ],
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "hoaisang0806@gmail.com",
+            "strict_min_version": "58.0"
+        }
     }
 }
