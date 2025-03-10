@@ -1,0 +1,78 @@
+body {
+    font-size: 16px;
+    box-sizing: border-box;
+    user-select: none;
+    font-family: "Roboto", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+}
+
+.content {
+    min-height: 12rem;
+    width: 32rem;
+    border: 0.2rem solid #000;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    background-color: #eee;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+}
+
+.content__input {
+    grid-row: 1 / span 2;
+    grid-column: 1 / span 3;
+    padding: 0.5rem;
+    font-size: 2rem;
+}
+
+.content__input:focus {
+    outline: none;
+}
+
+.content__submit_btn {
+    grid-row: 1 / span 2;
+    grid-column: 4;
+    border: 1px solid #000;
+    font-weight: bold;
+    border-left: 0px;
+}
+
+.content__submit_btn:hover {
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.content__word {
+    font-size: 1.5rem;
+    grid-column-start: 1;
+    grid-row-start: 3;
+    font-weight: bold;
+}
+
+.content__phonetic {
+    font-size: 1.5rem;
+    grid-row-start: 3;
+    grid-column-start: 4;
+}
+
+.content__speaker_icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+.content__speaker_icon:hover {
+    cursor: pointer;
+}
+
+.content__meanings {
+    grid-row: 4 / span 7;
+    grid-column: 1 / span 4;
+    display: grid;
+    row-gap: 1rem;
+}
+
+.content__meaning_index {
+    font-weight: bold;
+}
