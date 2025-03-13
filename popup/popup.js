@@ -1,96 +1,86 @@
 const handlePhoneticAudio = () => {
-    const audioUrl = document.querySelector(".content__speaker_icon").getAttribute("audio");
-    const audio = new Audio(audioUrl);
-    audio.play();
+    const audioUrl = document.querySelector(".content__speaker_icon")?.getAttribute("audio");
+    if (audioUrl) {
+        new Audio(audioUrl).play();
+    }
 };
 
-const speakerBtn = document.querySelector(".content__speaker_icon");
-speakerBtn.addEventListener("click", handlePhoneticAudio);
+document.querySelector(".content__speaker_icon")?.addEventListener("click", handlePhoneticAudio);
 
-/**
- *
- * @param {string} word
- *
- */
 const createMeanings = async (word) => {
-    const url = "https://api.dictionaryapi.dev/api/v2/entries/en/" + word;
-    const response = await fetch(url);
-    const json = await response.json();
-
+    const url = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
     const contentWord = document.querySelector(".content__word");
     const contentMeanings = document.querySelector(".content__meanings");
     const contentPhoneticText = document.querySelector(".content__phonetic_text");
     const contentSpeakerIcon = document.querySelector(".content__speaker_icon");
-    if (json.title !== undefined) {
-        contentWord.innerHTML = "Not found";
-        contentMeanings.innerHTML = json.title;
-        contentPhoneticText.innerHTML = "";
-        contentSpeakerIcon.setAttribute("audio", "");
-        return;
-    }
+    try {
+        const response = await fetch(url);
+        const json = await response.json();
 
-    let wordInfo = {
-        word: "",
-        phonetic: {
-            text: "",
-            audio: ""
-        },
-        meanings: []
-    };
+        const wordInfo = {
+            word: json[0].word,
+            phonetic: { text: "", audio: "" },
+            meanings: []
+        };
 
-    wordInfo.word = json[0].word;
-
-    for (const phonetic of json[0].phonetics) {
-        if (phonetic.audio && phonetic.text) {
+        const phonetic = json[0].phonetics.find((p) => p.audio && p.text);
+        if (phonetic) {
             wordInfo.phonetic.text = phonetic.text;
             wordInfo.phonetic.audio = phonetic.audio;
-            break;
         }
+
+        wordInfo.meanings = json[0].meanings.map((meaning) => {
+            const validMeaning = {
+                partOfSpeech: meaning.partOfSpeech,
+                definition: meaning.definitions[0].definition,
+                example: meaning.definitions[0].example
+            };
+            if (typeof meaning.definitions[0].example === "undefined") {
+                delete validMeaning.example;
+            }
+            return validMeaning;
+        });
+
+        const meaningsHtml = wordInfo.meanings
+            .map(
+                (meaning) => `
+            <div class="content__meaning">
+                <span class="content__meaning_index">Part-of-speech:</span>
+                <span class="content__part_of_speech">${meaning.partOfSpeech}</span><br />
+                <span class="content__meaning_index">Definition:</span>
+                <span class="content__definition">${meaning.definition}</span><br />
+                ${
+                    meaning.example
+                        ? `
+                        <span class="content__meaning_index">Example:</span>
+                        <span class="content__example">${meaning.example}</span>`
+                        : ""
+                }
+            </div>
+        `
+            )
+            .join("");
+
+        contentWord.innerHTML = wordInfo.word;
+        contentPhoneticText.innerHTML = wordInfo.phonetic.text;
+        contentSpeakerIcon.setAttribute("audio", wordInfo.phonetic.audio);
+        contentMeanings.innerHTML = meaningsHtml;
+    } catch (error) {
+        console.error("Error fetching or processing data:", error);
+
+        contentWord.innerHTML = "Not found";
+        contentMeanings.innerHTML = "";
+        contentPhoneticText.innerHTML = "";
+        contentSpeakerIcon.setAttribute("audio", "");
     }
-
-    for (const meaning of json[0].meanings) {
-        const validMeaning = {
-            partOfSpeech: meaning.partOfSpeech,
-            definition: meaning.definitions[0].definition
-        };
-        if (typeof meaning.definitions[0].example !== "undefined") {
-            validMeaning.example = meaning.definitions[0].example;
-        }
-        wordInfo.meanings.push(validMeaning);
-    }
-
-    let meanings = "";
-
-    for (const meaning of wordInfo.meanings) {
-        const html = `
-                <div class="content__meaning">
-                    <span class="content__meaning_index">Part-of-speech:</span>
-                    <span class="content__part_of_speech">${meaning.partOfSpeech}</span>
-                    <br />
-                    <span class="content__meaning_index">Definition:</span>
-                    <span class="content__definition">${meaning.definition}</span>
-                    <br />
-                    ${
-                        meaning.example
-                            ? `<span class="content__meaning_index">Example:</span>
-                                <span class="content__example">${meaning.example}</span>`
-                            : ""
-                    }
-                </div>
-        `;
-        meanings += html;
-    }
-
-    contentWord.innerHTML = wordInfo.word;
-    contentPhoneticText.innerHTML = wordInfo.phonetic.text;
-    contentSpeakerIcon.setAttribute("audio", wordInfo.phonetic.audio);
-    contentMeanings.innerHTML = meanings;
 };
 
 const handleSubmitBtn = async () => {
     const input = document.querySelector(".content__input");
-    const word = input.value;
-    await createMeanings(word);
+    const word = input?.value;
+    if (word) {
+        await createMeanings(word);
+    }
 };
 
-document.querySelector(".content__submit_btn").addEventListener("click", handleSubmitBtn);
+document.querySelector(".content__submit_btn")?.addEventListener("click", handleSubmitBtn);
