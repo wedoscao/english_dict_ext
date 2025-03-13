@@ -64,6 +64,7 @@ const createMeanings = async (word) => {
         contentWord.innerHTML = wordInfo.word;
         contentPhoneticText.innerHTML = wordInfo.phonetic.text;
         contentSpeakerIcon.setAttribute("audio", wordInfo.phonetic.audio);
+        contentSpeakerIcon.style.display = "block";
         contentMeanings.innerHTML = meaningsHtml;
     } catch (error) {
         console.error("Error fetching or processing data:", error);
@@ -72,6 +73,9 @@ const createMeanings = async (word) => {
         contentMeanings.innerHTML = "";
         contentPhoneticText.innerHTML = "";
         contentSpeakerIcon.setAttribute("audio", "");
+        if (contentSpeakerIcon.style.display !== "none") {
+            contentSpeakerIcon.style.display = "none";
+        }
     }
 };
 

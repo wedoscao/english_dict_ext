@@ -60,6 +60,7 @@ body {
 .content__speaker_icon {
     width: 1rem;
     height: 1rem;
+    display: none;
 }
 
 .content__speaker_icon:hover {
