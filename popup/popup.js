@@ -88,3 +88,12 @@ const handleSubmitBtn = async () => {
 };
 
 document.querySelector(".content__submit_btn")?.addEventListener("click", handleSubmitBtn);
+
+const handleOnLoaded = () => {
+    const input = document.querySelector(".content__input");
+    if (input) {
+        window.setTimeout(() => input.focus(), 0);
+    }
+};
+
+handleOnLoaded();
