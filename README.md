@@ -1,4 +1,4 @@
-# An extension which is using to translate English words
+# An extension which is used for translating English words
 
 [This extension use this API](https://dictionaryapi.dev/)
 
